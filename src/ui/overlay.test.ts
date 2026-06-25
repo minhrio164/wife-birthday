@@ -45,11 +45,11 @@ describe("renderOverlay", () => {
 
     renderOverlay({ mode: "mystery-card", itemId: item.id }, [item], vi.fn())
 
-    expect(document.body.textContent).toContain("Bi mat nho")
-    expect(document.body.textContent).toContain("Cam on em da den.")
     expect(
       document.querySelector(".mystery-image")?.getAttribute("src")
     ).toBe("/covers/letter.jpg")
+    expect(document.querySelector(".mystery-card h2")).toBeNull()
+    expect(document.querySelector(".mystery-card p")).toBeNull()
     expect(
       document
         .querySelector(".mystery-card .overlay-back")

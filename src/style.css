@@ -272,58 +272,36 @@ body {
 
 .mystery-card {
   position: relative;
-  max-width: 760px;
-  padding: 4rem 2.4rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+  max-width: calc(100vw - 2rem);
+  padding: 0;
   text-align: center;
-  color: #4d2c3d;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at top, rgba(255, 255, 255, 0.95), rgba(255, 244, 232, 0.92) 36%, rgba(255, 226, 198, 0.94)),
-    linear-gradient(145deg, rgba(255, 249, 244, 0.98), rgba(255, 231, 211, 0.92));
-  border: 1px solid rgba(176, 117, 120, 0.16);
+  overflow: visible;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .mystery-media {
-  width: 100%;
-  margin: 0 auto 1.5rem;
-  padding: 0.35rem;
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.72);
-  box-shadow: 0 22px 45px rgba(92, 57, 78, 0.14);
+  width: fit-content;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .mystery-image {
   display: block;
-  width: 100%;
-  max-height: 42dvh;
+  width: auto;
+  max-width: min(calc(100vw - 96px), 1200px);
+  height: auto;
+  max-height: 82dvh;
   object-fit: contain;
-  border-radius: 18px;
-}
-
-.mystery-kicker {
-  margin-bottom: 1rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #d17868;
-  font-size: 0.85rem;
-}
-
-.mystery-card h2 {
-  font-size: clamp(2rem, 4vw, 3.25rem);
-  line-height: 1.05;
-  margin-bottom: 1rem;
-  font-family: "Brush Script MT", "Marker Felt", "Comic Sans MS", cursive;
-  font-weight: 500;
-  color: #8d5165;
-}
-
-.mystery-card p:last-child {
-  font-size: clamp(1rem, 1.9vw, 1.25rem);
-  line-height: 1.7;
-  max-width: 28rem;
-  margin-inline: auto;
-  font-family: "Brush Script MT", "Marker Felt", "Comic Sans MS", cursive;
-  font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+  border-radius: 0;
 }
 
 @media (max-width: 768px) {
@@ -371,20 +349,9 @@ body {
     height: auto;
   }
 
-  .detail-copy,
-  .mystery-card {
-    padding: 1.4rem;
-  }
-
-  .mystery-media {
-    margin-bottom: 1rem;
-    padding: 0.25rem;
-    border-radius: 18px;
-  }
-
   .mystery-image {
-    max-height: 34dvh;
-    border-radius: 14px;
+    max-width: calc(100vw - 32px);
+    max-height: 72dvh;
   }
 
   .detail-copy {
@@ -542,51 +509,6 @@ body {
     transform: scaleX(1.08);
     transform-origin: left;
   }
-}
-
-.mystery-stars {
-  display: flex;
-  justify-content: center;
-  gap: 0.75rem;
-  margin-bottom: 1.2rem;
-}
-
-.mystery-stars span {
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  background: linear-gradient(145deg, #ffb067, #ff6f91);
-  box-shadow: 0 0 0 8px rgba(255, 179, 138, 0.16);
-}
-
-.mystery-signoff {
-  margin-top: 1.75rem;
-  font-size: 0.82rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(90, 55, 74, 0.55);
-}
-
-.mystery-card::before {
-  content: "";
-  position: absolute;
-  top: 24px;
-  left: 50%;
-  width: 120px;
-  height: 28px;
-  background: rgba(245, 212, 182, 0.72);
-  border-radius: 6px;
-  transform: translateX(-50%) rotate(-3deg);
-  box-shadow: 0 6px 18px rgba(105, 72, 82, 0.12);
-}
-
-.mystery-card::after {
-  content: "";
-  position: absolute;
-  inset: 18px;
-  border: 1px dashed rgba(171, 115, 130, 0.18);
-  border-radius: 24px;
-  pointer-events: none;
 }
 
 .loading-panel::before {

@@ -59,11 +59,7 @@ export function renderOverlay(
       </section>
     `
   } else {
-    const safeTitle = item.title || "Bat ngo nho"
     const detailImageSrc = item.detailSrc ?? item.src
-    const safeMessage =
-      item.message ||
-      "Chuc em mot ngay sinh nhat that vui va that nhieu yeu thuong."
 
     root.innerHTML = `
       <section class="overlay-shell">
@@ -86,17 +82,8 @@ export function renderOverlay(
               <path d="m6 6 12 12"></path>
             </svg>
           </button>
-          <div class="mystery-stars" aria-hidden="true">
-            <span></span><span></span><span></span>
-          </div>
           <div class="mystery-media">
             <img class="mystery-image" src="${detailImageSrc}" alt="La thu bi mat" />
-          </div>
-          <p class="mystery-kicker">Bat ngo nho danh cho em</p>
-          <h2>${safeTitle}</h2>
-          <p>${safeMessage}</p>
-          <div class="mystery-signoff">
-            <span>From your birthday gallery demo</span>
           </div>
         </article>
       </section>
