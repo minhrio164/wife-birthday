@@ -9,6 +9,22 @@ const palette = [
   ["#ff9f68", "#ffe06b"],
 ]
 
+const photoSources = [
+  "/512/p1.jpg",
+  "/512/p2.jpg",
+  "/512/p3.jpg",
+  "/512/p4.jpg",
+  "/512/p5.jpg",
+  "/512/p6.jpg",
+  "/512/p7.jpg",
+  "/512/p8.jpg",
+  "/512/p9.jpg",
+  "/512/p10.jpg",
+  "/512/p11.jpg",
+  "/512/p12.jpg",
+  "/512/p13.jpg",
+] as const
+
 function createPlaceholderImage(index: number, label: string) {
   const [start, end] = palette[index % palette.length]
   const number = String(index + 1).padStart(2, "0")
@@ -36,11 +52,12 @@ function createPlaceholderImage(index: number, label: string) {
 
 function createPhoto(index: number): GalleryPhotoItem {
   const ordinal = String(index + 1).padStart(2, "0")
+  const src = photoSources[index % photoSources.length]
 
   return {
     id: `photo-${ordinal}`,
     type: "photo",
-    src: createPlaceholderImage(index, `Khoanh khac ${ordinal}`),
+    src,
     caption: `Caption demo ${ordinal} - mot khoanh khac dang yeu de sau nay ban thay vao.`,
     demoDate: `${String((index % 27) + 1).padStart(2, "0")}/${String(((index + 3) % 12) + 1).padStart(2, "0")}/2024`,
   }
@@ -52,35 +69,40 @@ const mysteryEntries: GalleryItem[] = [
   {
     id: "mystery-01",
     type: "mystery",
-    src: createPlaceholderImage(25, "Mystery 01"),
+    src: "/mystery-thumbnail.png",
+    detailSrc: "/mystery-letter.png",
     title: "Dieu nho xiu dau tien",
     message: "Neu hom nay em dang cuoi, thi anh muon em cuoi them mot chut nua. Chuc em co mot sinh nhat that ngot ngao.",
   },
   {
     id: "mystery-02",
     type: "mystery",
-    src: createPlaceholderImage(26, "Mystery 02"),
+    src: "/mystery-thumbnail.png",
+    detailSrc: "/mystery-letter.png",
     title: "Qua bat ngo thu hai",
     message: "Co nhung ngay binh thuong boi vi co em ma tro thanh ky niem. Cam on em da xuat hien trong cuoc song cua anh.",
   },
   {
     id: "mystery-03",
     type: "mystery",
-    src: createPlaceholderImage(27, "Mystery 03"),
+    src: "/mystery-thumbnail.png",
+    detailSrc: "/mystery-letter.png",
     title: "Chuc em mot dieu dep",
     message: "Mong em luon duoc yeu thuong, duoc bao boc, va luon gap nhung dieu dep de nhat tren duong di cua minh.",
   },
   {
     id: "mystery-04",
     type: "mystery",
-    src: createPlaceholderImage(28, "Mystery 04"),
+    src: "/mystery-thumbnail.png",
+    detailSrc: "/mystery-letter.png",
     title: "Phia sau moi tam anh",
     message: "Moi tam anh o day chi la cai co. Dieu anh thuc su muon giu lai la cam giac duoc di cung em qua nhung ngay vui the nay.",
   },
   {
     id: "mystery-05",
     type: "mystery",
-    src: createPlaceholderImage(29, "Mystery 05"),
+    src: "/mystery-thumbnail.png",
+    detailSrc: "/mystery-letter.png",
     title: "Chot lai bang mot loi chuc",
     message: "Chuc em mot tuoi moi that ruc ro, nhieu niem vui, nhieu suc khoe, va that nhieu tinh yeu o quanh minh.",
   },

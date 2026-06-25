@@ -12,6 +12,9 @@
   },
   "devDependencies": {
     "@types/normalize-wheel": "^1.0.4",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "agentation": "^3.0.2",
     "jsdom": "^26.1.0",
     "typescript": "~5.8.3",
     "vite": "^7.1.2",
@@ -25,6 +28,8 @@
     "lenis": "^1.3.9",
     "lil-gui": "^0.20.0",
     "normalize-wheel": "^1.0.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "tailwindcss": "^4.1.12",
     "three": "file:three-0.179.1.tgz",
     "vite-plugin-glsl": "^1.5.1"

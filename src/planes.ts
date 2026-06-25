@@ -4,6 +4,7 @@ import fragmentShader from "./shaders/fragment.glsl"
 import { Size } from "./types/types"
 import normalizeWheel from "normalize-wheel"
 import { RuntimeGalleryItem } from "./types/gallery"
+import { pickItemFromScreenRects, ScreenRect } from "./utils/selection"
 
 interface Props {
   scene: THREE.Scene
@@ -22,6 +23,12 @@ interface ImageInfo {
     yStart: number
     yEnd: number
   }
+}
+
+interface InstanceMeta {
+  itemId: string
+  initialPosition: THREE.Vector3
+  speed: number
 }
 
 export default class Planes {
@@ -73,6 +80,7 @@ export default class Planes {
   blurryAtlasTexture: THREE.Texture | null = null
   items: RuntimeGalleryItem[]
   instanceItemIds: string[] = []
+  instanceMetas: InstanceMeta[] = []
   onSelect?: (itemId: string) => void
   interactive: boolean = true
 
@@ -263,6 +271,15 @@ export default class Planes {
       const imageIndex = i % this.imageInfos.length
       const item = this.items[i % this.items.length]
       this.instanceItemIds[i] = item.id
+      this.instanceMetas[i] = {
+        itemId: item.id,
+        initialPosition: new THREE.Vector3(
+          initialPosition[i * 3 + 0],
+          initialPosition[i * 3 + 1],
+          initialPosition[i * 3 + 2]
+        ),
+        speed: meshSpeed[i],
+      }
 
       aTextureCoords[i * 4 + 0] = this.imageInfos[imageIndex].uvs.xStart
       aTextureCoords[i * 4 + 1] = this.imageInfos[imageIndex].uvs.xEnd
@@ -327,27 +344,99 @@ export default class Planes {
   }
 
   bindSelection(camera: THREE.PerspectiveCamera, element: HTMLElement) {
-    const raycaster = new THREE.Raycaster()
-    const pointer = new THREE.Vector2()
-
     element.addEventListener("click", (event) => {
       if (!this.interactive) return
 
-      pointer.x = (event.clientX / window.innerWidth) * 2 - 1
-      pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
+      const itemId = pickItemFromScreenRects(
+        { x: event.clientX, y: event.clientY },
+        this.buildScreenRects(camera)
+      )
 
-      raycaster.setFromCamera(pointer, camera)
-
-      const [hit] = raycaster.intersectObject(this.mesh)
-      const instanceId = hit?.instanceId
-
-      if (instanceId == null) return
-
-      const itemId = this.instanceItemIds[instanceId]
       if (itemId) {
         this.onSelect?.(itemId)
       }
     })
+  }
+
+  buildScreenRects(camera: THREE.PerspectiveCamera): ScreenRect[] {
+    const halfWidth = 1
+    const halfHeight = 1.69
+
+    return this.instanceMetas.flatMap((meta) => {
+      const center = this.getInstanceCenter(meta)
+      if (center.z <= -30) return []
+
+      const centerProjected = center.clone().project(camera)
+      if (centerProjected.z < -1 || centerProjected.z > 1) return []
+
+      const topRight = center
+        .clone()
+        .add(new THREE.Vector3(halfWidth, halfHeight, 0))
+        .project(camera)
+      const bottomLeft = center
+        .clone()
+        .add(new THREE.Vector3(-halfWidth, -halfHeight, 0))
+        .project(camera)
+
+      const centerX = (centerProjected.x * 0.5 + 0.5) * window.innerWidth
+      const centerY = (-centerProjected.y * 0.5 + 0.5) * window.innerHeight
+      const rightX = (topRight.x * 0.5 + 0.5) * window.innerWidth
+      const topY = (-topRight.y * 0.5 + 0.5) * window.innerHeight
+      const leftX = (bottomLeft.x * 0.5 + 0.5) * window.innerWidth
+      const bottomY = (-bottomLeft.y * 0.5 + 0.5) * window.innerHeight
+
+      return [
+        {
+          itemId: meta.itemId,
+          left: Math.min(leftX, rightX, centerX),
+          right: Math.max(leftX, rightX, centerX),
+          top: Math.min(topY, bottomY, centerY),
+          bottom: Math.max(topY, bottomY, centerY),
+          depth: centerProjected.z,
+        },
+      ]
+    })
+  }
+
+  getInstanceCenter(meta: InstanceMeta) {
+    const x = meta.initialPosition.x + this.getWrappedDisplacement({
+      initialValue: meta.initialPosition.x,
+      minBound: -this.shaderParameters.maxX,
+      maxBound: this.shaderParameters.maxX,
+      offset: this.drag.xCurrent - this.material.uniforms.uTime.value * meta.speed,
+    })
+    const y = meta.initialPosition.y + this.getWrappedDisplacement({
+      initialValue: meta.initialPosition.y,
+      minBound: -this.shaderParameters.maxY,
+      maxBound: this.shaderParameters.maxY,
+      offset: this.drag.yCurrent,
+    })
+    const z = meta.initialPosition.z + this.getWrappedDisplacement({
+      initialValue: meta.initialPosition.z,
+      minBound: -30,
+      maxBound: 12,
+      offset: -this.scrollY.current,
+    })
+
+    return new THREE.Vector3(x, y, z)
+  }
+
+  getWrappedDisplacement({
+    initialValue,
+    minBound,
+    maxBound,
+    offset,
+  }: {
+    initialValue: number
+    minBound: number
+    maxBound: number
+    offset: number
+  }) {
+    const minOffset = Math.abs(initialValue - minBound)
+    const maxOffset = Math.abs(maxBound - initialValue)
+    const totalSpan = maxOffset + minOffset
+
+    return THREE.MathUtils.euclideanModulo(minOffset - offset, totalSpan) - minOffset
   }
 
   onWheel(event: MouseEvent) {

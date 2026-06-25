@@ -12,6 +12,7 @@ export interface GalleryMysteryItem {
   id: string
   type: "mystery"
   src: string
+  detailSrc?: string
   title: string
   message: string
 }

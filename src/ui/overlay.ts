@@ -24,33 +24,73 @@ export function renderOverlay(
   root.setAttribute("data-open", "true")
 
   if (item.type === "photo") {
-    const safeCaption = item.caption || "Viet caption cua ban o day."
+    const safeCaption = item.caption || "Our first pics"
     const safeDate = item.exifDate ?? "Chua co ngay chup"
 
     root.innerHTML = `
       <section class="overlay-shell">
-        <button class="overlay-back" type="button">Quay lai</button>
         <article class="detail-card">
-          <img class="detail-image" src="${item.src}" alt="Anh ky niem" />
-          <div class="detail-copy">
-            <p class="detail-date">${safeDate}</p>
-            <p class="detail-caption">${safeCaption}</p>
+          <button class="overlay-back" type="button" aria-label="Dong">
+            <svg
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-x-icon lucide-x"
+            >
+              <path d="M18 6 6 18"></path>
+              <path d="m6 6 12 12"></path>
+            </svg>
+          </button>
+          <div class="detail-photo-frame">
+            <img class="detail-image" src="${item.src}" alt="Anh ky niem" />
+            <div class="detail-copy">
+              <p class="detail-date">${safeDate}</p>
+              <p class="detail-caption">${safeCaption}</p>
+            </div>
           </div>
         </article>
       </section>
     `
   } else {
     const safeTitle = item.title || "Bat ngo nho"
+    const detailImageSrc = item.detailSrc ?? item.src
     const safeMessage =
       item.message ||
       "Chuc em mot ngay sinh nhat that vui va that nhieu yeu thuong."
 
     root.innerHTML = `
       <section class="overlay-shell">
-        <button class="overlay-back" type="button">Quay lai</button>
         <article class="mystery-card">
+          <button class="overlay-back" type="button" aria-label="Dong">
+            <svg
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-x-icon lucide-x"
+            >
+              <path d="M18 6 6 18"></path>
+              <path d="m6 6 12 12"></path>
+            </svg>
+          </button>
           <div class="mystery-stars" aria-hidden="true">
             <span></span><span></span><span></span>
+          </div>
+          <div class="mystery-media">
+            <img class="mystery-image" src="${detailImageSrc}" alt="La thu bi mat" />
           </div>
           <p class="mystery-kicker">Bat ngo nho danh cho em</p>
           <h2>${safeTitle}</h2>
@@ -64,4 +104,49 @@ export function renderOverlay(
   }
 
   root.querySelector(".overlay-back")?.addEventListener("click", onClose)
+
+  if (state.mode === "photo-detail") {
+    syncPhotoFrameWidth(root)
+  }
+}
+
+function syncPhotoFrameWidth(root: HTMLElement) {
+  const frame = root.querySelector(".detail-photo-frame") as HTMLElement | null
+  const image = root.querySelector(".detail-image") as HTMLImageElement | null
+  const copy = root.querySelector(".detail-copy") as HTMLElement | null
+  if (!frame || !image || !copy) return
+
+  const horizontalPadding = 48
+
+  const updateWidth = () => {
+    if (image.naturalWidth <= 0 || image.naturalHeight <= 0) return
+
+    const isMobile = window.innerWidth <= 768
+    const maxWidth = Math.max(160, window.innerWidth - (isMobile ? 72 : 96))
+    const maxHeight = window.innerHeight * (isMobile ? 0.56 : 0.7)
+    const scale = Math.min(
+      1,
+      maxWidth / image.naturalWidth,
+      maxHeight / image.naturalHeight
+    )
+
+    const renderedWidth = Math.round(image.naturalWidth * scale)
+    const renderedHeight = Math.round(image.naturalHeight * scale)
+
+    image.style.width = `${renderedWidth}px`
+    image.style.height = `${renderedHeight}px`
+    frame.style.width = `${renderedWidth + horizontalPadding}px`
+    copy.style.width = `${renderedWidth}px`
+  }
+
+  updateWidth()
+
+  if (!image.complete) {
+    image.addEventListener("load", updateWidth, { once: true })
+  }
+
+  if ("ResizeObserver" in window) {
+    const observer = new ResizeObserver(() => updateWidth())
+    observer.observe(image)
+  }
 }

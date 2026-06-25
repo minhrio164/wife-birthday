@@ -10,6 +10,14 @@ vi.mock("exifr", () => ({
 }))
 
 describe("readCaptureDate", () => {
+  it("uses bundled /512 images for preview photos", () => {
+    const photoItems = galleryItems.filter((item) => item.type === "photo")
+
+    expect(photoItems).toHaveLength(25)
+    expect(photoItems[0]?.src).toBe("/512/p1.jpg")
+    expect(photoItems[12]?.src).toBe("/512/p13.jpg")
+  })
+
   it("uses DateTimeOriginal when available", async () => {
     const exifr = await import("exifr")
     vi.mocked(exifr.default.parse).mockResolvedValueOnce({
