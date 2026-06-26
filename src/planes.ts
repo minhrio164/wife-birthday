@@ -83,6 +83,8 @@ export default class Planes {
   instanceMetas: InstanceMeta[] = []
   onSelect?: (itemId: string) => void
   interactive: boolean = true
+  introComplete: boolean = false
+  introTotalDuration: number = 4.2
 
   constructor({ scene, sizes, items, onSelect }: Props) {
     this.scene = scene
@@ -217,6 +219,7 @@ export default class Planes {
       transparent: true,
       uniforms: {
         uTime: { value: 0 },
+        uIntroTime: { value: 0 },
         uMaxXdisplacement: {
           value: new THREE.Vector2(
             this.shaderParameters.maxX,
@@ -254,7 +257,9 @@ export default class Planes {
   fillMeshData() {
     const initialPosition = new Float32Array(this.meshCount * 3)
     const meshSpeed = new Float32Array(this.meshCount)
+    const introDelay = new Float32Array(this.meshCount)
     const aTextureCoords = new Float32Array(this.meshCount * 4)
+    const imageAspect = new Float32Array(this.meshCount)
 
     for (let i = 0; i < this.meshCount; i++) {
       initialPosition[i * 3 + 0] =
@@ -267,6 +272,8 @@ export default class Planes {
       initialPosition[i * 3 + 2] = Math.random() * (7 - -30) - 30 // z
 
       meshSpeed[i] = Math.random() * 0.5 + 0.5
+      introDelay[i] =
+        (i % this.items.length) * 0.075 + Math.floor(i / this.items.length) * 0.012
 
       const imageIndex = i % this.imageInfos.length
       const item = this.items[i % this.items.length]
@@ -285,6 +292,7 @@ export default class Planes {
       aTextureCoords[i * 4 + 1] = this.imageInfos[imageIndex].uvs.xEnd
       aTextureCoords[i * 4 + 2] = this.imageInfos[imageIndex].uvs.yStart
       aTextureCoords[i * 4 + 3] = this.imageInfos[imageIndex].uvs.yEnd
+      imageAspect[i] = this.imageInfos[imageIndex].aspectRatio
     }
 
     this.geometry.setAttribute(
@@ -295,10 +303,18 @@ export default class Planes {
       "aMeshSpeed",
       new THREE.InstancedBufferAttribute(meshSpeed, 1)
     )
+    this.geometry.setAttribute(
+      "aIntroDelay",
+      new THREE.InstancedBufferAttribute(introDelay, 1)
+    )
 
     this.mesh.geometry.setAttribute(
       "aTextureCoords",
       new THREE.InstancedBufferAttribute(aTextureCoords, 4)
+    )
+    this.mesh.geometry.setAttribute(
+      "aImageAspect",
+      new THREE.InstancedBufferAttribute(imageAspect, 1)
     )
   }
 
@@ -345,7 +361,7 @@ export default class Planes {
 
   bindSelection(camera: THREE.PerspectiveCamera, element: HTMLElement) {
     element.addEventListener("click", (event) => {
-      if (!this.interactive) return
+      if (!this.interactive || !this.introComplete) return
 
       const itemId = pickItemFromScreenRects(
         { x: event.clientX, y: event.clientY },
@@ -452,6 +468,12 @@ export default class Planes {
 
   render(delta: number) {
     this.material.uniforms.uTime.value += delta * 0.015
+    this.material.uniforms.uIntroTime.value = Math.min(
+      this.material.uniforms.uIntroTime.value + delta * 0.016,
+      this.introTotalDuration
+    )
+    this.introComplete =
+      this.material.uniforms.uIntroTime.value >= this.introTotalDuration
 
     // Smoothly interpolate current drag towards target
     this.drag.xCurrent +=

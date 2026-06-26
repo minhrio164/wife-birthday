@@ -19,11 +19,15 @@ export default class App {
   }
 
   async start() {
-    renderLoadingScreen(this.appRoot)
+    const enterLoading = new Promise<void>((resolve) => {
+      renderLoadingScreen(this.appRoot, resolve)
+    })
+
     renderOverlay({ mode: "loading" }, [], this.closeOverlay)
 
     const [items] = await Promise.all([
       preloadGalleryItems(galleryItems),
+      enterLoading,
       new Promise((resolve) => window.setTimeout(resolve, 1800)),
     ])
 

@@ -369,164 +369,129 @@ body {
   overflow: hidden;
   padding: 2rem;
   text-align: center;
-  color: #fff7f0;
+  color: #fff9f4;
   background:
-    radial-gradient(circle at top, rgba(255, 237, 178, 0.45), transparent 34%),
-    radial-gradient(circle at bottom left, rgba(255, 168, 132, 0.46), transparent 30%),
-    linear-gradient(145deg, #ff9461, #ff5e85 48%, #ffcc70);
+    linear-gradient(rgba(18, 8, 18, 0.3), rgba(18, 8, 18, 0.68)),
+    url("/galaxy-background-with-pink-clouds.jpg") center / cover no-repeat,
+    #160a17;
 }
 
-.loading-panel {
-  position: relative;
-  z-index: 2;
-  width: min(720px, 100%);
-  padding: 2.4rem 2rem;
-  border-radius: 36px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 246, 239, 0.14));
-  box-shadow: 0 30px 90px rgba(86, 35, 66, 0.22);
-  backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 245, 235, 0.28);
-}
-
-.loading-screen h1 {
-  font-size: clamp(2.5rem, 7vw, 5.25rem);
-  line-height: 0.95;
-  max-width: 9ch;
-  text-wrap: balance;
-  text-shadow: 0 10px 24px rgba(115, 43, 71, 0.18);
-}
-
-.loading-screen p {
-  margin-top: 1rem;
-  font-size: clamp(1rem, 2.2vw, 1.3rem);
-  color: rgba(255, 248, 241, 0.92);
-}
-
-.loading-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1rem;
-  padding: 0.65rem 1rem;
-  border: 1px solid rgba(255, 248, 241, 0.48);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.14);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  font-size: 0.82rem;
-}
-
-.loading-kicker {
-  margin-bottom: 0.9rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  color: rgba(255, 246, 237, 0.78);
-}
-
-.loading-progress {
-  margin: 1.7rem auto 0;
-  width: min(320px, 72%);
-  height: 10px;
-  padding: 2px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.22);
-}
-
-.loading-progress span {
-  display: block;
-  width: 58%;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, #fff2bf, #ffffff 55%, #ffd694);
-  animation: loadingBar 1.8s ease-in-out infinite alternate;
-}
-
-.loading-orb {
-  position: absolute;
-  border-radius: 999px;
-  filter: blur(10px);
-  opacity: 0.5;
-}
-
-.orb-a {
-  width: 280px;
-  height: 280px;
-  top: 8%;
-  left: 8%;
-  background: rgba(255, 255, 255, 0.18);
-}
-
-.orb-b {
-  width: 220px;
-  height: 220px;
-  bottom: 12%;
-  right: 12%;
-  background: rgba(255, 223, 165, 0.26);
-}
-
-.orb-c {
-  width: 160px;
-  height: 160px;
-  top: 22%;
-  right: 18%;
-  background: rgba(255, 245, 236, 0.18);
-}
-
-.loading-confetti {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.9) 0 4px, transparent 5px),
-    radial-gradient(circle at 82% 12%, rgba(255, 230, 168, 0.95) 0 5px, transparent 6px),
-    radial-gradient(circle at 20% 76%, rgba(255, 195, 136, 0.95) 0 6px, transparent 7px),
-    radial-gradient(circle at 70% 74%, rgba(255, 255, 255, 0.8) 0 3px, transparent 4px),
-    radial-gradient(circle at 50% 30%, rgba(255, 212, 186, 0.8) 0 4px, transparent 5px);
-  animation: confettiFloat 3.4s ease-in-out infinite alternate;
-}
-
-@keyframes confettiFloat {
-  from {
-    transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.75;
-  }
-
-  to {
-    transform: translate3d(0, -18px, 0) scale(1.03);
-    opacity: 1;
-  }
-}
-
-@keyframes loadingBar {
-  from {
-    transform: scaleX(0.9);
-    transform-origin: left;
-  }
-
-  to {
-    transform: scaleX(1.08);
-    transform-origin: left;
-  }
-}
-
-.loading-panel::before {
+.loading-screen::before {
   content: "";
   position: absolute;
-  inset: 18px;
-  border-radius: 24px;
-  border: 1px dashed rgba(255, 245, 235, 0.28);
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.035) 0 1px,
+      transparent 1px 90px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.025) 0 1px,
+      transparent 1px 90px
+    );
+  opacity: 0.52;
   pointer-events: none;
+}
+
+.loading-circles {
+  --dim: 186vmin;
+  pointer-events: none;
+  position: fixed;
+  width: var(--dim);
+  height: var(--dim);
+  top: calc(50% - var(--dim) / 2);
+  left: calc(50% - var(--dim) / 2);
+  max-width: none;
+  transform-origin: center;
+}
+
+.loading-circle-text {
+  text-transform: uppercase;
+  transform-origin: 700px 700px;
+  will-change: transform, opacity;
+}
+
+.loading-circle-text--1 {
+  fill: rgba(255, 216, 125, 0.82);
+  font-size: clamp(170px, 25vmin, 180px);
+  font-weight: 300;
+}
+
+.loading-circle-text--2 {
+  fill: rgba(255, 142, 187, 0.72);
+  font-size: clamp(136px, 17vmin, 153px);
+  font-weight: 400;
+}
+
+.loading-circle-text--3 {
+  fill: rgba(255, 248, 244, 0.7);
+  font-size: clamp(110px, 13.5vmin, 120px);
+  font-weight: 400;
+}
+
+.loading-circle-text--4 {
+  fill: rgba(255, 181, 116, 0.78);
+  font-size: clamp(85px, 9.5vmin, 94px);
+  font-weight: 300;
+}
+
+.loading-center {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+}
+
+.loading-enter {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 88px;
+  height: 88px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  color: #1c0e18;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.loading-enter:focus-visible {
+  outline: 2px solid rgba(255, 249, 244, 0.88);
+  outline-offset: 5px;
+}
+
+.loading-enter:disabled {
+  cursor: default;
+}
+
+.loading-enter__bg {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(145deg, #ffd77e, #fff5dd 52%, #ff9ac8);
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.loading-enter__text {
+  position: relative;
+  z-index: 1;
+}
+
+.loading-enter--active .loading-enter__bg {
+  filter: saturate(0.7);
 }
 
 @media (max-width: 768px) {
-  .loading-panel {
-    padding: 2rem 1.2rem;
-    border-radius: 28px;
-  }
-
-  .loading-progress {
-    width: 88%;
+  .loading-circles {
+    --dim: 186vmin;
   }
 }

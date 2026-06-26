@@ -10,12 +10,12 @@ vi.mock("exifr", () => ({
 }))
 
 describe("readCaptureDate", () => {
-  it("uses bundled /512 images for preview photos", () => {
+  it("uses optimized imported photos for preview photos", () => {
     const photoItems = galleryItems.filter((item) => item.type === "photo")
 
     expect(photoItems).toHaveLength(25)
-    expect(photoItems[0]?.src).toBe("/512/p1.jpg")
-    expect(photoItems[12]?.src).toBe("/512/p13.jpg")
+    expect(photoItems[0]?.src).toBe("/photos/photo-01.jpg")
+    expect(photoItems[24]?.src).toBe("/photos/photo-25.jpg")
   })
 
   it("uses DateTimeOriginal when available", async () => {

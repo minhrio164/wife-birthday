@@ -2,10 +2,13 @@ varying vec2 vUv;
 
 attribute vec3 aInitialPosition;
 attribute float aMeshSpeed;
+attribute float aIntroDelay;
 attribute vec4 aTextureCoords;
+attribute float aImageAspect;
 
 
 uniform float uTime;
+uniform float uIntroTime;
 uniform vec2 uMaxXdisplacement;
 uniform vec2 uDrag;
 
@@ -14,7 +17,9 @@ uniform float uScrollY;
 
 
 varying float vVisibility;
+varying float vIntroProgress;
 varying vec4 vTextureCoords;
+varying float vImageAspect;
 
 
 //linear smoothstep
@@ -25,8 +30,11 @@ float remap(float value, float originMin, float originMax)
 
 void main()
 {     
-    
-    vec3 newPosition=position + aInitialPosition;
+    float introProgress = smoothstep(aIntroDelay, aIntroDelay + 0.85, uIntroTime);
+    float introScale = mix(0.15, 1.0, introProgress);
+
+    vec3 cardPosition = position * introScale;
+    vec3 newPosition = cardPosition + aInitialPosition;
 
 
     float maxX = uMaxXdisplacement.x;
@@ -54,10 +62,11 @@ void main()
     
     newPosition.x += xDisplacement; 
     newPosition.y += yDisplacement;
-    newPosition.z += zDisplacement;
+    newPosition.z += zDisplacement - (1.0 - introProgress) * 4.0;
 
 
     vVisibility = remap(newPosition.z, minZ, minZ+5.);
+    vIntroProgress = introProgress;
     
 
 
@@ -71,4 +80,5 @@ void main()
 
     vUv = uv;
     vTextureCoords = aTextureCoords;
+    vImageAspect = aImageAspect;
 }
