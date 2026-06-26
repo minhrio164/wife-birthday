@@ -26,9 +26,9 @@ export function renderLoadingScreen(root: HTMLElement, onEnter: () => void) {
         </text>
       </svg>
       <div class="loading-center">
-        <button class="loading-enter" type="button" aria-label="Enter birthday gallery">
+        <button class="loading-enter" type="button" aria-label="Spin birthday gallery">
           <span class="loading-enter__bg"></span>
-          <span class="loading-enter__text">Enter</span>
+          <span class="loading-enter__text">Spin</span>
         </button>
       </div>
     </section>
