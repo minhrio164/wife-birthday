@@ -16,13 +16,13 @@ export function renderLoadingScreen(root: HTMLElement, onEnter: () => void) {
           <textPath href="#loading-circle-1" textLength="2830">Happy Birthday Happy Birthday Happy Birthday&nbsp;</textPath>
         </text>
         <text class="loading-circle-text loading-circle-text--2">
-          <textPath href="#loading-circle-2" textLength="2001">Happy Birthday Happy Birthday&nbsp;</textPath>
+          <textPath href="#loading-circle-2" textLength="2001">お誕生日おめでとう お誕生日おめでとう&nbsp;</textPath>
         </text>
         <text class="loading-circle-text loading-circle-text--3">
-          <textPath href="#loading-circle-3" textLength="1341">Happy Birthday Happy&nbsp;</textPath>
+          <textPath href="#loading-circle-3" textLength="1341">Joyeux anniversaire Joyeux&nbsp;</textPath>
         </text>
         <text class="loading-circle-text loading-circle-text--4">
-          <textPath href="#loading-circle-4" textLength="836">Happy Birthday&nbsp;</textPath>
+          <textPath href="#loading-circle-4" textLength="836">Feliz cumpleaños&nbsp;</textPath>
         </text>
       </svg>
       <div class="loading-center">

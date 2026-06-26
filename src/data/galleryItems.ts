@@ -75,15 +75,15 @@ const mysteryEntries: GalleryItem[] = [
   {
     id: "mystery-01",
     type: "mystery",
-    src: "/mystery-thumbnail-01.png",
-    detailSrc: "/mystery-letter.png",
+    src: "/mystery-thumbnail-01.jpg",
+    detailSrc: "/mystery-letter-01.png",
     title: "Dieu nho xiu dau tien",
     message: "Neu hom nay em dang cuoi, thi anh muon em cuoi them mot chut nua. Chuc em co mot sinh nhat that ngot ngao.",
   },
   {
     id: "mystery-02",
     type: "mystery",
-    src: "/mystery-thumbnail-02.png",
+    src: "/mystery-thumbnail-02.jpg",
     detailSrc: "/mystery-letter.png",
     title: "Qua bat ngo thu hai",
     message: "Co nhung ngay binh thuong boi vi co em ma tro thanh ky niem. Cam on em da xuat hien trong cuoc song cua anh.",
@@ -91,7 +91,7 @@ const mysteryEntries: GalleryItem[] = [
   {
     id: "mystery-03",
     type: "mystery",
-    src: "/mystery-thumbnail-03.png",
+    src: "/mystery-thumbnail-03.jpg",
     detailSrc: "/mystery-letter.png",
     title: "Chuc em mot dieu dep",
     message: "Mong em luon duoc yeu thuong, duoc bao boc, va luon gap nhung dieu dep de nhat tren duong di cua minh.",
@@ -99,7 +99,7 @@ const mysteryEntries: GalleryItem[] = [
   {
     id: "mystery-04",
     type: "mystery",
-    src: "/mystery-thumbnail-04.png",
+    src: "/mystery-thumbnail-04.jpg",
     detailSrc: "/mystery-letter.png",
     title: "Phia sau moi tam anh",
     message: "Moi tam anh o day chi la cai co. Dieu anh thuc su muon giu lai la cam giac duoc di cung em qua nhung ngay vui the nay.",
@@ -107,7 +107,7 @@ const mysteryEntries: GalleryItem[] = [
   {
     id: "mystery-05",
     type: "mystery",
-    src: "/mystery-thumbnail-05.png",
+    src: "/mystery-thumbnail-05.jpg",
     detailSrc: "/mystery-letter.png",
     title: "Chot lai bang mot loi chuc",
     message: "Chuc em mot tuoi moi that ruc ro, nhieu niem vui, nhieu suc khoe, va that nhieu tinh yeu o quanh minh.",

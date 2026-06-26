@@ -1,12 +1,25 @@
 // @vitest-environment jsdom
 
-import { beforeEach, describe, expect, it } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { createMusicWidget } from "./musicWidget"
 import { musicTracks } from "../data/musicTracks"
 
 describe("createMusicWidget", () => {
+  class AudioMock {
+    src = ""
+    currentTime = 0
+    play = vi.fn().mockResolvedValue(undefined)
+    pause = vi.fn()
+    load = vi.fn()
+    removeAttribute = vi.fn((name: string) => {
+      if (name === "src") this.src = ""
+    })
+    addEventListener = vi.fn()
+  }
+
   beforeEach(() => {
     document.body.innerHTML = '<div id="app"></div>'
+    vi.stubGlobal("Audio", AudioMock)
   })
 
   it("renders a bottom-center floating player with initial track metadata", () => {
@@ -53,13 +66,14 @@ describe("createMusicWidget", () => {
     widget.destroy()
   })
 
-  it("swaps the play icon to pause when toggled", () => {
+  it("swaps the play icon to pause when toggled", async () => {
     const widget = createMusicWidget({
       mount: document.getElementById("app") as HTMLElement,
       tracks: musicTracks,
     })
 
     ;(document.querySelector('[data-action="toggle"]') as HTMLButtonElement).click()
+    await Promise.resolve()
 
     expect(
       (
@@ -68,6 +82,22 @@ describe("createMusicWidget", () => {
         ) as HTMLImageElement
       )?.getAttribute("src")
     ).toBe("/Icon-pause.svg")
+
+    widget.destroy()
+  })
+
+  it("disables play when the active track has no audio source", () => {
+    const widget = createMusicWidget({
+      mount: document.getElementById("app") as HTMLElement,
+      tracks: musicTracks,
+    })
+
+    ;(document.querySelector('[data-action="next"]') as HTMLButtonElement).click()
+
+    expect(
+      (document.querySelector('[data-action="toggle"]') as HTMLButtonElement)
+        .disabled
+    ).toBe(true)
 
     widget.destroy()
   })

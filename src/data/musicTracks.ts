@@ -3,9 +3,11 @@ import { MusicTrack } from "../types/music"
 export const musicTracks: MusicTrack[] = [
   {
     id: "track-01",
-    title: "Our Memory Lane",
-    artist: "Birthday Playlist",
-    coverSrc: "/covers/image_0.jpg",
+    title: "like JENNIE",
+    artist: "JENNIE",
+    coverSrc: "/jennie-like-jennie-cover.png",
+    audioSrc: "/jennie-like-jennie.mp3",
+    startAtSeconds: 36,
   },
   {
     id: "track-02",

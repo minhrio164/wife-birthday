@@ -4,4 +4,5 @@ export interface MusicTrack {
   artist: string
   coverSrc: string
   audioSrc?: string
+  startAtSeconds?: number
 }

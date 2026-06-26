@@ -32,11 +32,13 @@ interface InstanceMeta {
 }
 
 export default class Planes {
+  static readonly MAX_ATLAS_IMAGE_WIDTH = 512
+  static readonly BLURRY_ATLAS_SCALE = 0.25
   scene: THREE.Scene
   geometry: THREE.PlaneGeometry
   material: THREE.ShaderMaterial
   mesh: THREE.InstancedMesh
-  meshCount: number = 400
+  meshCount: number = 260
   sizes: Size
   drag: {
     xCurrent: number
@@ -140,15 +142,29 @@ export default class Planes {
 
     const images = await Promise.all(imagePromises)
 
+    const scaledImages = images.map((img: any) => {
+      const originalWidth = img.width as number
+      const originalHeight = img.height as number
+      const scale = Math.min(
+        1,
+        Planes.MAX_ATLAS_IMAGE_WIDTH / originalWidth
+      )
+
+      return {
+        source: img as CanvasImageSource,
+        width: Math.max(1, Math.round(originalWidth * scale)),
+        height: Math.max(1, Math.round(originalHeight * scale)),
+        aspectRatio: originalWidth / originalHeight,
+      }
+    })
+
     // Calculate atlas dimensions (for simplicity, we'll stack images vertically)
-    const atlasWidth = Math.max(
-      ...images.map((img: any) => img.width as number)
-    )
+    const atlasWidth = Math.max(...scaledImages.map((img) => img.width))
     let totalHeight = 0
 
     // First pass: calculate total height
-    images.forEach((img: any) => {
-      totalHeight += img.height as number
+    scaledImages.forEach((img) => {
+      totalHeight += img.height
     })
 
     // Create canvas with calculated dimensions
@@ -159,27 +175,24 @@ export default class Planes {
 
     // Second pass: draw images and calculate normalized coordinates
     let currentY = 0
-    this.imageInfos = images.map((img: any) => {
-      const aspectRatio = (img.width as number) / (img.height as number)
-
-      // Draw the image
-      ctx.drawImage(img as any, 0, currentY)
+    this.imageInfos = scaledImages.map((img) => {
+      ctx.drawImage(img.source, 0, currentY, img.width, img.height)
 
       // Calculate normalized coordinates
 
       const info = {
         width: img.width,
         height: img.height,
-        aspectRatio,
+        aspectRatio: img.aspectRatio,
         uvs: {
           xStart: 0,
-          xEnd: (img.width as number) / atlasWidth,
+          xEnd: img.width / atlasWidth,
           yStart: 1 - currentY / totalHeight,
-          yEnd: 1 - (currentY + (img.height as number)) / totalHeight,
+          yEnd: 1 - (currentY + img.height) / totalHeight,
         },
       }
 
-      currentY += img.height as number
+      currentY += img.height
       return info
     })
 
@@ -198,11 +211,23 @@ export default class Planes {
     if (!this.atlasTexture) return
 
     const blurryCanvas = document.createElement("canvas")
-    blurryCanvas.width = this.atlasTexture.image.width
-    blurryCanvas.height = this.atlasTexture.image.height
+    blurryCanvas.width = Math.max(
+      1,
+      Math.round(this.atlasTexture.image.width * Planes.BLURRY_ATLAS_SCALE)
+    )
+    blurryCanvas.height = Math.max(
+      1,
+      Math.round(this.atlasTexture.image.height * Planes.BLURRY_ATLAS_SCALE)
+    )
     const ctx = blurryCanvas.getContext("2d")!
-    ctx.filter = "blur(100px)"
-    ctx.drawImage(this.atlasTexture.image, 0, 0)
+    ctx.filter = "blur(24px)"
+    ctx.drawImage(
+      this.atlasTexture.image,
+      0,
+      0,
+      blurryCanvas.width,
+      blurryCanvas.height
+    )
     this.blurryAtlasTexture = new THREE.Texture(blurryCanvas)
     this.blurryAtlasTexture.wrapS = THREE.ClampToEdgeWrapping
     this.blurryAtlasTexture.wrapT = THREE.ClampToEdgeWrapping
