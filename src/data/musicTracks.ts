@@ -5,7 +5,7 @@ export const musicTracks: MusicTrack[] = [
     id: "track-01",
     title: "like JENNIE",
     artist: "JENNIE",
-    coverSrc: "/jennie-like-jennie-cover.png",
+    coverSrc: "/jennie-like-jennie-cover.jpg",
     audioSrc: "/jennie-like-jennie.mp3",
     startAtSeconds: 36,
   },

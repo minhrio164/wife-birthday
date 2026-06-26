@@ -5,12 +5,18 @@ import { createMusicWidget } from "./musicWidget"
 import { musicTracks } from "../data/musicTracks"
 
 describe("createMusicWidget", () => {
+  let audioInstances: AudioMock[] = []
+
   class AudioMock {
     src = ""
     currentTime = 0
+    preload = ""
     play = vi.fn().mockResolvedValue(undefined)
     pause = vi.fn()
     load = vi.fn()
+    constructor() {
+      audioInstances.push(this)
+    }
     removeAttribute = vi.fn((name: string) => {
       if (name === "src") this.src = ""
     })
@@ -19,6 +25,7 @@ describe("createMusicWidget", () => {
 
   beforeEach(() => {
     document.body.innerHTML = '<div id="app"></div>'
+    audioInstances = []
     vi.stubGlobal("Audio", AudioMock)
   })
 
@@ -72,6 +79,7 @@ describe("createMusicWidget", () => {
       tracks: musicTracks,
     })
 
+    expect(audioInstances[0]?.src).toBe("")
     ;(document.querySelector('[data-action="toggle"]') as HTMLButtonElement).click()
     await Promise.resolve()
 
@@ -82,6 +90,8 @@ describe("createMusicWidget", () => {
         ) as HTMLImageElement
       )?.getAttribute("src")
     ).toBe("/Icon-pause.svg")
+    expect(audioInstances[0]?.src).toContain("/jennie-like-jennie.mp3")
+    expect(audioInstances[0]?.currentTime).toBe(36)
 
     widget.destroy()
   })

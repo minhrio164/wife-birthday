@@ -57,6 +57,9 @@ export function createMusicWidget({
   let currentIndex = 0
   let isPlaying = false
   const audio = typeof Audio !== "undefined" ? new Audio() : null
+  if (audio) {
+    audio.preload = "none"
+  }
 
   const title = host.querySelector(".music-widget__title") as HTMLElement
   const artist = host.querySelector(".music-widget__artist") as HTMLElement
@@ -71,16 +74,30 @@ export function createMusicWidget({
     '[data-action="next"]'
   ) as HTMLButtonElement
 
-  const syncAudioSource = () => {
+  const clearAudioSource = () => {
     if (!audio) return
-    const track = tracks[currentIndex]
-    const nextSource = track.audioSrc ?? ""
+    audio.pause()
+    audio.removeAttribute("src")
+    audio.load()
+  }
 
-    if (audio.src !== nextSource) {
+  const syncAudioSource = () => {
+    if (!audio) return false
+    const track = tracks[currentIndex]
+    if (!track.audioSrc) {
+      clearAudioSource()
+      return false
+    }
+
+    const absoluteSource = new URL(track.audioSrc, window.location.href).href
+
+    if (audio.src !== absoluteSource) {
       audio.pause()
-      audio.src = nextSource
+      audio.src = track.audioSrc
       audio.currentTime = track.startAtSeconds ?? 0
     }
+
+    return true
   }
 
   const render = () => {
@@ -98,8 +115,6 @@ export function createMusicWidget({
     const track = tracks[currentIndex]
     if (!track.audioSrc || !audio) return
 
-    syncAudioSource()
-
     if (isPlaying) {
       audio.pause()
       isPlaying = false
@@ -108,6 +123,11 @@ export function createMusicWidget({
     }
 
     try {
+      if (!syncAudioSource()) {
+        isPlaying = false
+        render()
+        return
+      }
       await audio.play()
       isPlaying = true
     } catch {
@@ -121,17 +141,19 @@ export function createMusicWidget({
     currentIndex = (currentIndex + 1) % tracks.length
     const nextTrack = tracks[currentIndex]
 
-    if (audio) {
-      syncAudioSource()
-    }
-
     if (isPlaying && audio && nextTrack.audioSrc) {
       try {
+        if (!syncAudioSource()) {
+          isPlaying = false
+          render()
+          return
+        }
         await audio.play()
       } catch {
         isPlaying = false
       }
     } else {
+      clearAudioSource()
       isPlaying = false
     }
 
@@ -144,7 +166,6 @@ export function createMusicWidget({
   })
 
   mount.appendChild(host)
-  syncAudioSource()
   render()
 
   return {
